@@ -61,7 +61,7 @@ static bool skipSpace(Thread& th)
 	return false;
 }
 
-const char* nonnamechars = ";()[]{}.`,:\"\n";
+const char* nonnamechars = ";()[]{}.`,:\"\n=";
 
 static bool endOfWord(int c)
 {
@@ -567,12 +567,17 @@ bool parseSymbol(Thread& th, P<String>& result)
 	skipSpace(th);
 	const char* start = th.curline();
 	int c = th.getc();
-	
-	while(!endOfWord(c)) {
-		c = th.getc();
-	}
-	th.unget(1);
 
+	if (th.c() == '=') {
+		if (c == '<' || c == '>' || c == '=') {
+			th.getc();
+		}
+	} else if (c != '=') {
+		while(!endOfWord(c)) {
+			c = th.getc();
+		}
+		th.unget(1);
+	}
 	size_t len = th.curline() - start;
 	if (len == 0) return false;
 
