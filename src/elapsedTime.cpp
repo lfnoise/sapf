@@ -26,7 +26,8 @@ void initElapsedTime()
 {
 	struct mach_timebase_info info;
 	mach_timebase_info(&info);
-	gHostClockFreq = 1e9 * ((double)info.numer / (double)info.denom);
+	// The timebase converts ticks to nanoseconds: ns = ticks * numer / denom.
+	gHostClockFreq = 1e9 * ((double)info.denom / (double)info.numer);
 }
 
 double elapsedTime()
